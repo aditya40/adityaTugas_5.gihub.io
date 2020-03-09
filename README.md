@@ -270,4 +270,82 @@ person1.lastName = "Jobs";
 console.log(person1.firstName + " " + person1.lastName);
 ````
 
-##### 
+##### - Adapter Pattern
+###### * _Pola desain strtuctural yang digunakan untuk membuat dua interface atau class yang tidak terkait dan tidak kompatibel bekerja bersama yang tidak dapat dicapai jika interface tidak cocok._
+````
+function TicketPrice() {
+    this.request = function(start, end, overweightLuggage) {
+        // price calculation ...
+        return "$150.34";
+    }
+}
+ 
+// new interface
+function NewTicketPrice() {
+    this.login = function(credentials) { /* process credentials */ };
+    this.setStart = function(start) { /* set start point */ };
+    this.setDestination = function(destination) { /* set destination */ };
+    this.calculate = function(overweightLuggage) { 
+        //price calculation ...
+        return "$120.20"; 
+    };
+}
+ 
+// adapter interface
+function TicketAdapter(credentials) {
+    var pricing = new NewTicketPrice();
+  
+    pricing.login(credentials);
+  
+    return {
+        request: function(start, end, overweightLuggage) {
+            pricing.setStart(start);
+            pricing.setDestination(end);
+            return pricing.calculate(overweightLuggage);
+        }
+    };
+}
+ 
+const pricing = new TicketPrice();
+const credentials = { token: "30a8-6ee1" };
+const adapter = new TicketAdapter(credentials);
+ 
+
+let price = pricing.request("Bern", "London", 20);
+console.log("Old price: " + price);
+
+price = adapter.request("Bern", "London", 20);
+console.log("New price: " + price);
+````
+##### - Depedency Class
+````
+class JNE{
+    constructor(){
+        this.name = "JNE";
+    }
+    send(){
+        console.log("Send With" + this.name);
+    }
+}
+
+class TIKI{
+    constructor(){
+        this.name = "TIKI"
+    }
+    send(){
+        console.log("Send With" + this.name);
+    }
+}
+
+class Sender{
+    constructor(provider){
+        this.provider = provider
+    }
+    send(){
+        this.provider.send()
+    }
+}
+
+const sender = new Sender(new JNE())
+sender.send()
+````
